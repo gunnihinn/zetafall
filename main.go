@@ -2,10 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"path"
 	"sort"
 	"time"
@@ -70,19 +72,38 @@ var context struct {
 	Error error
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("index.html")
-	if err != nil {
-		fmt.Fprintf(w, "Error: %s", err)
-	}
+func getHandler(dir string, err error) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err != nil {
+			fmt.Fprintf(w, "Error: %s", err)
+			return
+		}
 
-	posts, err := getPosts("blog")
-	context.Posts = posts
-	context.Error = err
-	t.Execute(w, context)
+		t, err := template.ParseFiles(path.Join(dir, "index.html"))
+		if err != nil {
+			fmt.Fprintf(w, "Error: %s", err)
+			return
+		}
+
+		posts, err := getPosts(path.Join(dir, "blog"))
+		context.Posts = posts
+		context.Error = err
+		t.Execute(w, context)
+	}
+}
+
+func blogDir(args []string) (string, error) {
+	if len(args) > 0 {
+		return args[0], nil
+	}
+	return os.Getwd()
 }
 
 func main() {
-	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8080", nil)
+	var port = flag.Int("port", 8080, "HTTP port")
+	flag.Parse()
+
+	blogdir, err := blogDir(flag.Args())
+	http.HandleFunc("/", getHandler(blogdir, err))
+	http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 }
