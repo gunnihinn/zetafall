@@ -2,17 +2,18 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"html/template"
 	"net/http"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	content, err := ioutil.ReadFile("index.html")
+	t, err := template.ParseFiles("index.html")
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", err)
 	}
 
-	fmt.Fprintf(w, "%s", content)
+	var data struct{}
+	t.Execute(w, data)
 }
 
 func main() {
