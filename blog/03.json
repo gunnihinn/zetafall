@@ -1,0 +1,5 @@
+{
+    "Title": "Go skal það vera",
+    "Timestamp": "2017-01-31T09:58:00Z",
+    "Content": "<p>Eftir að hafa leitað í 10 mínútur hvernig maður býr aftur til virtualenv í Python, fundið allt hjálpardótið sem ég setti upp fyrir löngu til að gera það og gleymdi svo hvað heitir, búið til virtualenv, uppfært pip, sett up Flask, og búið til Halló Heimur vefapp í Flask var ég orðinn leiður á Python.</p>\n\n<p>Í staðinn kóðaði ég HTTP þjón í Go sem les inn færslur sem ég geymi í JSON skrám og setur þær inn í HTML template, á svona klukkutíma.</p>\n\n<p>Þetta er allt frekar hrátt ennþá. Það er leiðinlegt að geyma lengri strengi handvirkt í JSON, svo ég mun finna einhverja betri lausn til að geyma færslur (annað hvort sem skemmtilegra format á disk, eða bara í gagnagrunni). Ég er ekki búinn að setja upp Markdown túlk heldur, svo ég þarf að skrifa alla &lt;p&gt; tagga sjálfur.</p>\n\n<p>En þetta er fínt. Þetta er alla vega ekki enn eitt Blogger eða Wordpress bloggið.</p>\n"
+}

@@ -1,0 +1,5 @@
+{
+    "Title": "Blogg blogg blogg",
+    "Timestamp": "2017-01-30T13:00:00Z",
+    "Content": "<p>\nÉg er bara búinn að skrifa eina færslu og það er strax orðið þreytt að gera\nþað í hráu HTML. Við hljótum að geta gert betur.\n</p>\n\n<p>\nHöldum þessu einföldu til að byrja með og búum til eitthvað sem getur sótt\nfærslur hingað og þangað. Mér er alveg sama um að geta skrifað færslur í\nkerfinu mínu, svo eitthvað sem sækir og renderar markdown er fínt.\n</p>\n\n<p>\nÉg myndi skrifa eitthvað í Go ef ég nennti ruglinu í kringum $GOPATH, sem ég\ngeri eiginlega ekki. Python, kannski? En þá þarf ég að rugla í virtualenv og\nsvoleiðis.\n</p>"
+}
