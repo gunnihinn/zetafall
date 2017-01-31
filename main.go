@@ -6,8 +6,17 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"path"
+	"sort"
 	"time"
 )
+
+// ByDate implements sort.Interface for []Post
+type ByDate []Post
+
+func (a ByDate) Len() int           { return len(a) }
+func (a ByDate) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByDate) Less(i, j int) bool { return a[i].Timestamp.After(a[j].Timestamp) }
 
 // Post is a blog post
 type Post struct {
@@ -38,21 +47,27 @@ func fromFile(filename string) (Post, error) {
 }
 
 func getPosts(dirname string) ([]Post, error) {
-	p1, err1 := fromFile("blog/01.json")
-	p2, err2 := fromFile("blog/02.json")
-
-	if err1 != nil {
-		return []Post{}, err1
-	}
-	if err2 != nil {
-		return []Post{}, err2
+	files, err := ioutil.ReadDir(dirname)
+	if err != nil {
+		return []Post{}, err
 	}
 
-	return []Post{p2, p1}, nil
+	posts := make([]Post, 0, len(files))
+	for _, file := range files {
+		post, err := fromFile(path.Join(dirname, file.Name()))
+		if err != nil {
+			return []Post{}, err
+		}
+		posts = append(posts, post)
+	}
+
+	sort.Sort(ByDate(posts))
+	return posts, nil
 }
 
 var context struct {
 	Posts []Post
+	Error error
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -61,8 +76,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Error: %s", err)
 	}
 
-	posts, err := getPosts("dir")
+	posts, err := getPosts("blog")
 	context.Posts = posts
+	context.Error = err
 	t.Execute(w, context)
 }
 
