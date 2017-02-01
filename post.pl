@@ -9,7 +9,7 @@ use File::Temp;
 
 use DDP;
 
-my $BLOG = "$ENV{HOME}/Devel/golang/src/magnusson/blog";
+my $BLOG = "$ENV{HOME}/Devel/golang/src/zetafall/blog";
 
 sub main {
     my (@args) = @_;
