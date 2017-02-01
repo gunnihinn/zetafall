@@ -13,3 +13,4 @@ bsd: $(src)
 
 install:
 	rsync -avz $(bin) $(blog) $(index) $(user)@$(host):
+	ssh $(user)@$(host) 'sudo service magnusson restart'
