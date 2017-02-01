@@ -4,14 +4,51 @@ use v5.18;
 use strict;
 use warnings;
 
+use File::Basename;
+use File::Temp;
+
 use DDP;
+
+my $BLOG = "$ENV{HOME}/Devel/golang/src/magnusson/blog";
 
 sub main {
     my (@args) = @_;
 
-    say create_post($args[0]);
+    my %posts = map { $_ => 1 } map { basename($_) } glob("$BLOG/*.json");
+
+    for my $arg (@args) {
+        my $new_post = not exists $posts{basename($arg)};
+
+        my $filename;
+        if (not $new_post) {
+            $filename = $arg;
+        }
+
+        my $action = ($new_post) ? \&create_post : \&edit_post;
+        my $json = $action->($arg);
+        write_post($json, $filename);
+    }
 
     return 0;
+}
+
+sub write_post {
+    my ($json, $filename) = @_;
+
+    $filename = find_new_post_name() if not $filename;
+
+    open my $fh, '>', $filename or die $!;
+    print $fh $json;
+    close $fh;
+
+    return;
+}
+
+sub find_new_post_name {
+    my @posts = glob("$BLOG/*.json");
+    my $num = @posts;
+
+    return sprintf("$BLOG/%s.json", $num+1);
 }
 
 sub create_post {
@@ -23,6 +60,43 @@ sub create_post {
     chomp $json;
 
     return $json;
+}
+
+sub edit_post {
+    my ($json_filename) = @_;
+
+    my $post = parse_json($json_filename);
+    my $content = $post->{Content};
+    $content =~ s/\\n/\n/g;
+
+    my $fh = File::Temp->new( SUFFIX => '.md' );
+    say $fh $post->{Title};
+    say $fh "";
+    say $fh $content;
+
+    my $fname = $fh->filename();
+    system("\$EDITOR $fname");
+
+    my ($title, @lines) = parse_markdown($fname);
+    my $json = encode_json($title, $post->{Timestamp}, @lines);
+
+    return $json;
+}
+
+sub parse_json {
+    my ($fn) = @_;
+
+    local $/;
+    open my $fh, '<', $fn or die $!;
+    my $js = <$fh>;
+    close $fh;
+
+    say $js;
+
+    require JSON::PP;
+    my $json = JSON::PP->new->utf8;
+
+    return $json->utf8(0)->decode($js);
 }
 
 sub parse_markdown {
