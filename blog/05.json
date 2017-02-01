@@ -1,0 +1,5 @@
+{
+    "Title": "Markdown",
+    "Timestamp": "2017-02-01T08:06:00Z",
+    "Content": "Frá ykkur séð er kannski enginn munur, en færslurnar hérna eru ekki lengur skrifaðar í hreinu HTML, heldur í Markdown sem er svo túlkað sem HTML þegar færslurnar eru renderaðar.\n\nFramfarir vorar eru miklar.\n\nÉg held ég sé mest pirraður á að vera að blanda saman de facto gagnagrunninum mínum (það er að segja JSON skrám á hörðum diski, enn sem komið er) og hvernig ég skrifa færslur. Til að birta nýja færslu þarf ég að breyta henni handvirkt í JSON, sem er í raun það sama og ef ég þyrfti sjálfur að skrifa SQL skipun til að setja hana inn í gagnagrunn.\n\nEf ég skipti út hráka-og-kjúklingavír JSON gagnagrunninum mínum fyrir alvöru SQL gagnagrunn mun þetta sama vandamál ennþá pirra mig, svo það hlýtur að vera betra að leysa það fyrst."
+}

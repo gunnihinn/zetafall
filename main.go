@@ -11,6 +11,8 @@ import (
 	"path"
 	"sort"
 	"time"
+
+	"github.com/russross/blackfriday"
 )
 
 // ByDate implements sort.Interface for []Post
@@ -22,9 +24,10 @@ func (a ByDate) Less(i, j int) bool { return a[i].Timestamp.After(a[j].Timestamp
 
 // Post is a blog post
 type Post struct {
-	Title     string
-	Content   template.HTML
-	Timestamp time.Time
+	Title       string
+	Content     string
+	HTMLContent template.HTML
+	Timestamp   time.Time
 }
 
 // DMY returns day-month-year
@@ -35,8 +38,14 @@ func (p Post) DMY() string {
 func fromJSON(data []byte) (Post, error) {
 	p := Post{}
 	err := json.Unmarshal(data, &p)
+	if err != nil {
+		err = fmt.Errorf("Error '%s' while decoding '%s'", err, data)
+		return Post{}, err
+	}
 
-	return p, err
+	p.HTMLContent = template.HTML(blackfriday.MarkdownCommon([]byte(p.Content)))
+
+	return p, nil
 }
 
 func fromFile(filename string) (Post, error) {
