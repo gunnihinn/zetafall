@@ -9,11 +9,20 @@ use DDP;
 sub main {
     my (@args) = @_;
 
-    my ($title, @lines) = parse_markdown($args[0]);
-    my $time = timestamp();
-    say json($title, $time, @lines);
+    say create_post($args[0]);
 
     return 0;
+}
+
+sub create_post {
+    my ($markdown_filename) = @_;
+
+    my ($title, @lines) = parse_markdown($markdown_filename);
+    my $time = timestamp();
+    my $json = encode_json($title, $time, @lines);
+    chomp $json;
+
+    return $json;
 }
 
 sub parse_markdown {
@@ -51,18 +60,21 @@ sub timestamp {
     return sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year, $mon, $mday, $hour, $min, $sec);
 }
 
-sub json {
+sub encode_json {
     my ($title, $timestamp, @lines) = @_;
 
-    my $content = join("\\n", @lines);
+    my $payload = {
+        Title => $title,
+        Timestamp => $timestamp,
+        Content => join("\\n", @lines),
+    };
 
-    my $js = "{\n";
-    $js .= "    \"Title\": \"$title\",\n";
-    $js .= "    \"Timestamp\": \"$timestamp\",\n";
-    $js .= "    \"Content\": \"$content\"\n";
-    $js .= "}";
+    # JSON::PP exports a function called encode_json; require here to avoid
+    # name collision problems
+    require JSON::PP;
+    my $coder = JSON::PP->new->pretty;
 
-    return $js;
+    return $coder->encode($payload);
 }
 
 main @ARGV if @ARGV;
