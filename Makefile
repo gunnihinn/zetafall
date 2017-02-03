@@ -12,7 +12,7 @@ $(bin): $(src)
 	GOARCH=amd64 GOOS=freebsd go build $(project)
 
 post:
-	rsync -avz $(blog) $(index) $(user)@$(host):
+	rsync -avz --delete $(blog) $(index) $(user)@$(host):
 
 install: $(bin)
 	rsync -avz $(bin) $(user)@$(host):
