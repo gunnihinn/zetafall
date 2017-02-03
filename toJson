@@ -5,19 +5,21 @@ use strict;
 use warnings;
 
 use JSON::PP;
-use DDP;
 
 sub parse_text {
     my ($fn) = @_;
 
-    # read paragraphs
-    local $/ = "";
+    my ($head, $content);
+
     open my $fh, '<', $fn or die $!;
-    my $head = <$fh>;
-    my @content = ();
-    while (my $para = <$fh>) {
-        chomp $para;
-        push @content, $para;
+    {
+        # read paragraph
+        local $/ = "";
+        $head = <$fh>;
+
+        # read rest of file
+        local $/;
+        $content = <$fh>;
     }
     close $fh;
 
@@ -28,8 +30,7 @@ sub parse_text {
         $time = timestamp();
     }
 
-    my $content = join("\n", @content);
-    $content =~ s/\n/\\n/g;
+    chomp $content;
 
     return {
         Title => $title,
@@ -38,7 +39,7 @@ sub parse_text {
     };
 }
 
-sub to_json {
+sub as_json {
     my ($post) = @_;
 
     my $coder = JSON::PP->new->pretty;
@@ -58,7 +59,7 @@ sub main {
     my (@filenames) = @_;
     for my $filename (@filenames) {
         my $post = parse_text($filename);
-        say to_json($post);
+        say as_json($post);
     }
 
     return 0;
