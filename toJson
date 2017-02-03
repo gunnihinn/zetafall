@@ -1,0 +1,67 @@
+#!/usr/bin/env perl
+
+use v5.18;
+use strict;
+use warnings;
+
+use JSON::PP;
+use DDP;
+
+sub parse_text {
+    my ($fn) = @_;
+
+    # read paragraphs
+    local $/ = "";
+    open my $fh, '<', $fn or die $!;
+    my $head = <$fh>;
+    my @content = ();
+    while (my $para = <$fh>) {
+        chomp $para;
+        push @content, $para;
+    }
+    close $fh;
+
+    chomp $head;
+    my ($title, $time) = split("\n", $head);
+
+    if (not $time) {
+        $time = timestamp();
+    }
+
+    my $content = join("\n", @content);
+    $content =~ s/\n/\\n/g;
+
+    return {
+        Title => $title,
+        Timestamp => $time,
+        Content => $content,
+    };
+}
+
+sub to_json {
+    my ($post) = @_;
+
+    my $coder = JSON::PP->new->pretty;
+
+    return $coder->encode($post);
+}
+
+sub timestamp {
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    $year += 1900;
+    $mon += 1;
+
+    return sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year, $mon, $mday, $hour, $min, $sec);
+}
+
+sub main {
+    my (@filenames) = @_;
+    for my $filename (@filenames) {
+        my $post = parse_text($filename);
+        say to_json($post);
+    }
+
+    return 0;
+}
+
+exit main(@ARGV);
