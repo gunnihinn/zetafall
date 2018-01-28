@@ -11,7 +11,7 @@ $(index): $(src)
 	asciidoctor --backend html5 --out-file $(index) $(src)
 
 post: $(index)
-	rsync -avz --delete $(index) $(user)@$(host):
+	rsync -avz --delete $(index) $(user)@$(host):blog/.
 
 clean:
 	rm -f $(index)
