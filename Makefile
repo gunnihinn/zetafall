@@ -1,22 +1,17 @@
-bin=zetafall
-blog=blog
+src=blog.asc
 index=index.html
 
-src=main.go
-
 project=zetafall
-user=freebsd
-host=95.85.32.134
+user=gmagnusson
+host=188.226.132.84
 
-$(bin): $(src)
-	GOARCH=amd64 GOOS=freebsd go build $(project)
+.PHONY: clean
 
-post:
-	rsync -avz --delete $(blog) $(index) $(user)@$(host):
+$(index): $(src)
+	asciidoctor --backend html5 --out-file $(index) $(src)
 
-install: $(bin)
-	rsync -avz $(bin) $(user)@$(host):
-	ssh $(user)@$(host) 'sudo service $(project) restart'
+post: $(index)
+	rsync -avz --delete $(index) $(user)@$(host):
 
 clean:
-	rm -f $(bin)
+	rm -f $(index)

@@ -1,5 +1,0 @@
-{
-   "Content" : "Vandamálið við að geyma hluti í JSON skrám var í raun og veru ekki að hlutir\nværu í JSON skrám, heldur að ég þurfti að vita hvernig þeir voru geymdir til að\nskrifa nýjar færslur eða breyta gömlum færslum.\n\nOg sjá! 164 línum af Perl seinna er mér alveg sama hvernig nokkuð af þessu\nvirkar. Ég keyri bara Perl forrit sem annað hvort opnar vim svo ég geti skrifað\nnýja færslu, eða rúllar gegnum skráarnöfn sem ég gef því og annað hvort býr til\nnýjar færslur úr þeim eða opnar vim svo ég geti breytt færslunum sem í skránnum\neru.\n\nAð vísu þarf Perl forritið núna líka að vita hvernig ég geymi hluti, sem gerir\nmig létt óhamingjusamann. Ég get lifað með því eins og er. Mér liggur meira á að\nkíkja aftur yfir Go kóðann og afsóða hann aðeins, eða jafnvel setja eitthvað CSS\ná þessa síðu.",
-   "Title" : "Get editor or die trying",
-   "Timestamp" : "2017-02-01T16:57:59Z"
-}
